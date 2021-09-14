@@ -1,26 +1,30 @@
-<?php 
+<?php
 
-include 'init.php'; 
+include 'init.php';
 
-$poruka = "";
-if(isset($_POST['login'])){
-  $email = $mysqli->real_escape_string(trim($_POST['email']));
-  $password = $mysqli->real_escape_string(trim($_POST['password']));
-
-  $korisnik = new Korisnik();
-  $korisnik->email = $email;
-  $korisnik->sifra = $password;
-
-  if($korisnik->login($mysqli)){
-    $poruka ="Uspesno ste se ulogovali";
-  }else{
-    $poruka ="Neuspesno ste se ulogovali, proverite podatke";
-  }
+if (!isset($_SESSION['ulogovaniKorisnik']) || empty($_SESSION['ulogovaniKorisnik'])) {
+    header('location: login.php');
+    exit;
 }
+
+$prodavac = $_SESSION['ulogovaniKorisnik'];
+
+if ($prodavac->uloga == "kupac") {
+    header('location: poruci.php');
+    exit;
+}
+
+$kupac = new Korisnik();
+$nizKupaca = $kupac->vratiSveKupce($mysqli);
+
+$torba = new Torba();
+$nizTorbi = $torba->vratiSve($mysqli);
+
+$rezervacija = new Rezervacija();
+$nizRezervacija = $rezervacija->vratiSve($mysqli);
 ?>
 
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -28,97 +32,113 @@ if(isset($_POST['login'])){
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
+    <!-- Title  -->
     <title>Combo bags | Home</title>
 
+    <!-- Favicon  -->
     <link rel="icon" href="img/core-img/logo.png">
 
+  
     <link rel="stylesheet" href="css/core-style.css">
+ 
 
 </head>
 
 <body>
+    <!-- Search Wrapper Area Start -->
+    <div class="search-wrapper section-padding-100">
+        <div class="search-close">
+            <i class="fa fa-close" aria-hidden="true"></i>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="search-content">
+                        <form action="#" method="get">
+                            <input type="search" name="search" id="search" placeholder="Type your keyword...">
+                            <button type="submit"><img src="img/core-img/search.png" alt=""></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Search Wrapper Area End -->
 
+    <!-- ##### Main Content Wrapper Start ##### -->
     <div class="main-content-wrapper d-flex clearfix">
 
+        <!-- Mobile Nav (max width 767px)-->
         <div class="mobile-nav">
-          
+            <!-- Navbar Brand -->
             <div class="amado-navbar-brand">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
+            <!-- Navbar Toggler -->
             <div class="amado-navbar-toggler">
                 <span></span><span></span><span></span>
             </div>
         </div>
 
- 
+        <!-- Header Area Start -->
         <header class="header-area clearfix">
+            <!-- Close Icon -->
             <div class="nav-close">
                 <i class="fa fa-close" aria-hidden="true"></i>
             </div>
-          
+            <!-- Logo -->
             <div class="logo">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
-    
+            <!-- Amado Nav -->
             <nav class="amado-nav">
-                <ul class="site-menu main-menu js-clone-nav ml-auto ">
-
-            <?php
-                  if ($_SESSION['ulogovaniKorisnik'] != null) {
-                      if ($_SESSION['ulogovaniKorisnik']->uloga == 'prodavac') { ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="porudzbine.php">Porudzbine</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Izvestaj</a>
-                        </li>
-                      <?php 
-                        } 
-                        if ($_SESSION['ulogovaniKorisnik']->uloga == 'kupac') { ?>
-                             <li class="nav-item">
-                    <a class="nav-link" href="poruci.php">Prodavnica</a>
-                </li>
-                        <?php } ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="logout.php">Izloguj se</a>
-                    </li>
-                    <?php } else { ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="registracija.php">Sign in</a>
-                    </li>
-
-                    <?php } ?>
+                <ul>
+                    <li><a href="logout.php">Logout</a></li>
+                    <li><a href="brisanjePorudzbina.php">Preview and delete orders</a></li>
+                    
                 </ul>
             </nav>
             <!-- Button Group -->
             <!-- Social Button -->
             <div class="social-info d-flex justify-content-between">
-                <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+            <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                 <a href="https://www.facebook.com/combo.bags1"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                
             </div>
         </header>
-        <!-- Header Area End -->
-
+        <!-- Product Catagories Area Start -->
         <div class="products-catagories-area clearfix">
             <div class="amado-pro-catagory clearfix">
+            <h3 id="msg" class="text-center"><?php if (isset($_GET['msg'])) { echo $_GET['msg']; } ?></h3>                            
+            <div class="main">
+             <p class="sign" align="center">Izmeni porudzbinu</p>           
+              <form class="form1" method="PUT" action="rest/rezervacije">
+            <select class="un " type="text" align="center" name="idPorudzbine" class="form-control">
+                <?php
+                    foreach ($nizRezervacija as $rezervacije) {
+                        ?>
+                    <option value="<?= $rezervacije->id ?>"><?= $rezervacije->rezervacija  ?></option>
 
- <div class="main">
-    <p class="sign" align="center">Login</p>
-    <form class="form1" method= "POST" action="">
-      <input class="un " type="text" align="center" placeholder="Email" id="email" name="email">
-            <input class="pass" type="password" align="center" placeholder="Password" id="password" name="password">
-           <input style="background-color: #aa256f; border-color: #aa256f; color: white;" lass="submit" align="center" type="submit" name="login" value="Login" class="form-control btn-primary" id="login">
-          </form>      
-    </div>
-</div>
+                    <?php
+                    }
+                ?>
+            </select>
+            <input class="un " type="text" align="center" type="text" placeholder="Unesi cenu" class="form-control" name="cena">
+            <input style="background-color: #aa256f; border-color: #aa256f; color: white;" lass="submit" align="center" type="submit" class="form-control btn-primary" name="izmenaPorudzbine" value="Izmeni porudzbinu">
+            </form>
+            <h4 id="msgPut" class="text-center"></h4>
+        </div>
+
+            </div>
+        </div>
         <!-- Product Catagories Area End -->
     </div>
-</div>
     <br>
     <br>
     <br>
+
+        
     <!-- ##### Footer Area Start ##### -->
     <footer class="footer_area clearfix">
         <div class="container">
@@ -161,7 +181,51 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- Active js -->
     <script src="js/active.js"></script>
 
-    <style type="text/css">HTML CSSResult Skip Results Iframe
+     <script>
+            $(document).ready( function () {
+                $('#tabelaRezervacija').DataTable( {
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            extend: 'pdfHtml5',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                            }
+                        }
+                    ]
+                });
+            });
+        </script>
+        <script>
+             $(':input[name=izmenaPorudzbine]').click(function() {
+                // process the form
+                $("form").submit(function(event) {
+                    // get the form data
+                    var formData = {
+                        'idPorudzbine' : $(':input[name=idPorudzbine]').val(),
+                        'cena'         : $(':input[name=cena]').val()
+
+                    };
+                    setUrl = 'rest/rezervacije/' + formData.idPorudzbine;
+                    $.ajax({
+                        type        : 'PUT', // define the type of HTTP verb we want to use (POST for our form)
+                        url         : setUrl, // the url where we want to POST
+                        data        : JSON.stringify(formData), // our data object
+                        dataType    : 'json', // what type of data do we expect back from the server
+                        encode      : true,
+                        contentType: "application/json; charset=UTF-8"
+                    }).done(function(data) {
+                        $('#msgPut').html(data.poruka);  
+                    });
+                    
+                    // stop the form from submitting the normal way and refreshing the page
+                    event.preventDefault();
+                });
+            });
+
+        </script>
+
+        <style type="text/css">HTML CSSResult Skip Results Iframe
 EDIT ON
         body {
         background-color: #F3EBF6;
