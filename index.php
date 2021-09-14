@@ -40,7 +40,7 @@
             </div>
             <nav class="amado-nav">
                 <ul>
-                    <li><a href="#">Login</a></li>
+                    <li><a href="login.php">Login</a></li>
                     <li><a href="registracija.php">Sign in</a></li>
                 </ul>
             </nav>

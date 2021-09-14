@@ -1,5 +1,5 @@
 <?php
-
+include 'db/greske.php';
 include 'db/konekcija.php';
 include 'domen/Rezervacija.php';
 include 'domen/Korisnik.php';

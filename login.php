@@ -1,25 +1,24 @@
+<?php 
 
-<?php
-    include 'init.php';
-    $poruka = "";
-    if (isset($_POST['registracija'])) {
-        $ime = $mysqli->real_escape_string(trim($_POST['ime']));
-        $email = $mysqli->real_escape_string(trim($_POST['email']));
-        $password = $mysqli->real_escape_string(trim($_POST['password']));
+include 'init.php'; 
 
-        $korisnik = new Korisnik();
-        $korisnik->ime_prezime = $ime;
-        $korisnik->email = $email;
-        $korisnik->sifra = $password;
+$poruka = "";
+if(isset($_POST['login'])){
+  $email = $mysqli->real_escape_string(trim($_POST['email']));
+  $password = $mysqli->real_escape_string(trim($_POST['password']));
 
-        if ($korisnik->save($mysqli)) {
-            $poruka ="Uspesno ste se registrovali";
-        } else {
-            $poruka ="Neuspesno ste se registrovali";
-        }
-    }
+  $korisnik = new Korisnik();
+  $korisnik->email = $email;
+  $korisnik->sifra = $password;
 
+  if($korisnik->login($mysqli)){
+    $poruka ="Uspesno ste se ulogovali";
+  }else{
+    $poruka ="Neuspesno ste se ulogovali, proverite podatke";
+  }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,31 +35,14 @@
 
     <link rel="stylesheet" href="css/core-style.css">
 
-
 </head>
 
 <body>
-    <div class="search-wrapper section-padding-100">
-        <div class="search-close">
-            <i class="fa fa-close" aria-hidden="true"></i>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="search-content">
-                        <form action="#" method="get">
-                            <input type="search" name="search" id="search" placeholder="Type your keyword...">
-                            <button type="submit"><img src="img/core-img/search.png" alt=""></button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="main-content-wrapper d-flex clearfix">
 
         <div class="mobile-nav">
+          
             <div class="amado-navbar-brand">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
@@ -69,45 +51,75 @@
             </div>
         </div>
 
+ 
         <header class="header-area clearfix">
             <div class="nav-close">
                 <i class="fa fa-close" aria-hidden="true"></i>
             </div>
+          
             <div class="logo">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
+    
             <nav class="amado-nav">
-                <ul>
-                    <li class="active"><a href="index.php">Home</a></li>
-                    <li><a href="login.php">Login</a></li>
+                <ul class="site-menu main-menu js-clone-nav ml-auto ">
+
+            <?php
+                  if ($_SESSION['ulogovaniKorisnik'] != null) {
+                      if ($_SESSION['ulogovaniKorisnik']->uloga == 'prodavac') { ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Porudzbine</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Izvestaj</a>
+                        </li>
+                      <?php 
+                        } 
+                        if ($_SESSION['ulogovaniKorisnik']->uloga == 'kupac') { ?>
+                             <li class="nav-item">
+                    <a class="nav-link" href="#">Prodavnica</a>
+                </li>
+                        <?php } ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout.php">Izloguj se</a>
+                    </li>
+                    <?php } else { ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registracija.php">Sign in</a>
+                    </li>
+
+                    <?php } ?>
                 </ul>
             </nav>
-
+            <!-- Button Group -->
+            <!-- Social Button -->
             <div class="social-info d-flex justify-content-between">
-            <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                 <a href="https://www.facebook.com/combo.bags1"><i class="fa fa-facebook" aria-hidden="true"></i></a>
                 
             </div>
         </header>
+        <!-- Header Area End -->
 
         <div class="products-catagories-area clearfix">
             <div class="amado-pro-catagory clearfix">
 
  <div class="main">
-    <p class="sign" align="center">Sing in</p>
+    <p class="sign" align="center">Login</p>
     <form class="form1" method= "POST" action="">
-            <input class="un " type="text" align="center" placeholder="Name" id="ime" name="ime">
-            <input class="un " type="text" align="center" placeholder="Email" id="email" name="email">
+      <input class="un " type="text" align="center" placeholder="Email" id="email" name="email">
             <input class="pass" type="password" align="center" placeholder="Password" id="password" name="password">
-           <input style="background-color: #aa256f; border-color: #aa256f; color: white;" lass="submit" align="center" type="submit" name="registracija" value="Sign in" class="form-control btn-primary" id="registracija">
+           <input style="background-color: #aa256f; border-color: #aa256f; color: white;" lass="submit" align="center" type="submit" name="login" value="Login" class="form-control btn-primary" id="login">
           </form>      
     </div>
 </div>
+        <!-- Product Catagories Area End -->
     </div>
 </div>
     <br>
     <br>
     <br>
+    <!-- ##### Footer Area Start ##### -->
     <footer class="footer_area clearfix">
         <div class="container">
             <div class="row align-items-center">
@@ -269,5 +281,4 @@ Resources1× 0.5× 0.25×Rerun</style>
 </body>
 
 </html>
-
 
