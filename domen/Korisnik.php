@@ -15,8 +15,8 @@ class Korisnik
         // Potrebno je da se poklapaju email i sifra kako bi se korisnik ulogovao
         $sql = "SELECT k.*, u.naziv FROM korisnik k JOIN uloga u ON k.id_uloga=u.id WHERE email='$this->email' and sifra='$this->sifra'";
         $rezultat = $mysqli->query($sql);
-
         while ($red = $rezultat->fetch_object()) {
+            
             $korisnik = new Korisnik();
             $korisnik->id = $red->id;
             $korisnik->ime_prezime = $red->ime_prezime;

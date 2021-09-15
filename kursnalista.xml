@@ -1,0 +1,20 @@
+﻿<KURSNALISTA>
+<VALUTA>
+<valuta oznaka>EUR</valuta oznaka>
+<kup>117.2114</kup>
+<sre>117.5641</sre>
+<pro>117.9168</pro>
+</VALUTA>
+<VALUTA>
+<valuta oznaka>USD</valuta oznaka>
+<kup>99.0546</kup>
+<sre>99.3527</sre>
+<pro>99.6508</pro>
+</VALUTA>
+<VALUTA>
+<valuta oznaka>"chf"</valuta oznaka> 
+<kup>108.0688</kup> 
+<sre>108.394"</sre>
+<pro>108.7192"</pro>
+</VALUTA>
+</KURSNALISTA

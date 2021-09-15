@@ -74,6 +74,7 @@ if ($prodavac->uloga == "kupac") {
             <nav class="amado-nav">
                 <ul>
                     <li><a href="logout.php">Logout</a></li>
+                    <li><a href="porudzbine.php">Edit orders</a></li>
                 </ul>
             </nav>
 

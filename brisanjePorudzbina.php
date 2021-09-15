@@ -42,6 +42,7 @@ $nizRezervacija = $rezervacija->vratiSve($mysqli);
 
     <!-- Core Style CSS -->
     <link rel="stylesheet" href="css/core-style.css">
+    
    
 </head>
 

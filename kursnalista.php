@@ -32,13 +32,16 @@ $nizRezervacija = $rezervacija->vratiSve($mysqli);
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
+    <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- Title  -->
     <title>Combo bags | Home</title>
 
+    <!-- Favicon  -->
     <link rel="icon" href="img/core-img/logo.png">
 
     <link rel="stylesheet" href="css/core-style.css">
- 
+
 
 </head>
 
@@ -62,71 +65,61 @@ $nizRezervacija = $rezervacija->vratiSve($mysqli);
         </div>
     </div>
 
+
+    <!-- ##### Main Content Wrapper Start ##### -->
     <div class="main-content-wrapper d-flex clearfix">
 
-      
+        <!-- Mobile Nav (max width 767px)-->
         <div class="mobile-nav">
-        
+            <!-- Navbar Brand -->
             <div class="amado-navbar-brand">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
-         
+            <!-- Navbar Toggler -->
             <div class="amado-navbar-toggler">
                 <span></span><span></span><span></span>
             </div>
         </div>
 
- 
+        <!-- Header Area Start -->
         <header class="header-area clearfix">
-
+            <!-- Close Icon -->
             <div class="nav-close">
                 <i class="fa fa-close" aria-hidden="true"></i>
             </div>
-
+            <!-- Logo -->
             <div class="logo">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
-   
+            <!-- Amado Nav -->
             <nav class="amado-nav">
                 <ul>
                     <li><a href="logout.php">Logout</a></li>
-                    <li><a href="brisanjePorudzbina.php">Preview and delete orders</a></li>
-                    <li><a href="izvestaj.php">Report</a></li>
-                    <li><a href="kursnalista.php">Exchange rates</a></li>
+                    <li><a href="porudzbine.php">Edit orders</a></li>
                 </ul>
             </nav>
-         
+            <!-- Button Group -->
+            <!-- Social Button -->
             <div class="social-info d-flex justify-content-between">
             <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                 <a href="https://www.facebook.com/combo.bags1"><i class="fa fa-facebook" aria-hidden="true"></i></a>
             </div>
         </header>
+        <h4 id="msgPut" class="text-center"></h4>
 
+        <!-- Product Catagories Area Start -->
         <div class="products-catagories-area clearfix">
             <div class="amado-pro-catagory clearfix">
-            <h3 id="msg" class="text-center"><?php if (isset($_GET['msg'])) { echo $_GET['msg']; } ?></h3>                            
+            <div class="container">
             <div class="main">
-             <p class="sign" align="center">Izmeni porudzbinu</p>           
-              <form class="form1" method="PUT" action="rest/rezervacije">
-            <select class="un " type="text" align="center" name="idPorudzbine" class="form-control">
-                <?php
-                    foreach ($nizRezervacija as $rezervacije) {
-                        ?>
-                    <option value="<?= $rezervacije->id ?>"><?= $rezervacije->rezervacija  ?></option>
-
-                    <?php
-                    }
-                ?>
-            </select>
-            <input class="un " type="text" align="center" type="text" placeholder="Unesi cenu" class="form-control" name="cena">
-            <input style="background-color: #aa256f; border-color: #aa256f; color: white;" lass="submit" align="center" type="submit" class="form-control btn-primary" name="izmenaPorudzbine" value="Izmeni porudzbinu">
-            </form>
-            <h4 id="msgPut" class="text-center"></h4>
+                    <iframe src="http://www.kursna-lista.info/resources/kursna-lista.php?format=4&br_decimala=4&promene=1&procenat=1" width="325px" height="225px" frameborder="0" scrolling="no"></iframe>
         </div>
 
-            </div>
-        </div>
-      
+           </div>
+       </div>
+   </div>
+            
+        <!-- Product Catagories Area End -->
     </div>
     <br>
     <br>
@@ -175,49 +168,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- Active js -->
     <script src="js/active.js"></script>
 
-     <script>
-            $(document).ready( function () {
-                $('#tabelaRezervacija').DataTable( {
-                    dom: 'Bfrtip',
-                    buttons: [
-                        {
-                            extend: 'pdfHtml5',
-                            exportOptions: {
-                                columns: [ 0, 1, 2, 3, 4, 5 ]
-                            }
-                        }
-                    ]
-                });
-            });
-        </script>
-        <script>
-             $(':input[name=izmenaPorudzbine]').click(function() {
-                // process the form
-                $("form").submit(function(event) {
-                    // get the form data
-                    var formData = {
-                        'idPorudzbine' : $(':input[name=idPorudzbine]').val(),
-                        'cena'         : $(':input[name=cena]').val()
 
-                    };
-                    setUrl = 'rest/rezervacije/' + formData.idPorudzbine;
-                    $.ajax({
-                        type        : 'PUT', // define the type of HTTP verb we want to use (POST for our form)
-                        url         : setUrl, // the url where we want to POST
-                        data        : JSON.stringify(formData), // our data object
-                        dataType    : 'json', // what type of data do we expect back from the server
-                        encode      : true,
-                        contentType: "application/json; charset=UTF-8"
-                    }).done(function(data) {
-                        $('#msgPut').html(data.poruka);  
-                    });
-                    
-                    // stop the form from submitting the normal way and refreshing the page
-                    event.preventDefault();
-                });
-            });
-
-        </script>
+     
 
         <style type="text/css">HTML CSSResult Skip Results Iframe
 EDIT ON
@@ -228,7 +180,6 @@ EDIT ON
     
     .main {
         background-color: #FFFFFF;
-        width: 400px;
         height: 400px;
         margin: 7em auto;
         border-radius: 1.5em;
@@ -329,7 +280,80 @@ EDIT ON
             border-radius: 0px;
         }
         
-        
+      /* reset */
+html, body, div, span, p, a, img, b, u, i, center, table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    background: transparent;
+}
+
+/* div koji sadrzi tabelu */
+#kl-container {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size:12px;
+    text-align:center;
+    margin:10px;
+}
+
+/* tabela kursne liste */
+#kl-table {
+    margin:10px auto;
+}
+
+a {
+    text-decoration:none;
+    color:#039BC2;
+}
+a:hover {
+    border-bottom: 1px dashed #039BC2;
+}
+
+#kl-table td {
+    padding:3px;
+}
+
+/* klasa linka oznake valute */
+.code_link {
+
+}
+
+/* celija koja sadrzi kurs */
+.td_rate {
+    text-align:right;
+    width:60px;
+}
+
+/* boja neparnog reda */
+.rowcolor1 {
+    background-color:#FFF;
+}
+
+/* boja parnog reda */
+.rowcolor2 {
+    background-color:#EFEFEF;
+}
+
+/* boje za promenu kurseva */
+.green, .red, .yellow {
+    text-align:right;
+}
+.green {
+    color:#41A317;
+}
+.red {
+    color:#FF0000;
+    
+}
+.yellow {
+    color:#F6CF2B;
+}
+
+.imenaKurseva {
+    font-size:10px;
+}  
 
 
 
