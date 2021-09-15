@@ -71,7 +71,7 @@ if(isset($_POST['login'])){
                             <a class="nav-link" href="porudzbine.php">Porudzbine</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Izvestaj</a>
+                            <a class="nav-link" href="izvestaj.php">Izvestaj</a>
                         </li>
                       <?php 
                         } 
@@ -91,8 +91,7 @@ if(isset($_POST['login'])){
                     <?php } ?>
                 </ul>
             </nav>
-            <!-- Button Group -->
-            <!-- Social Button -->
+         
             <div class="social-info d-flex justify-content-between">
                 <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                 <a href="https://www.facebook.com/combo.bags1"><i class="fa fa-facebook" aria-hidden="true"></i></a>

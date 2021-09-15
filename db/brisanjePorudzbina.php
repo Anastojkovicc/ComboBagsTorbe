@@ -32,13 +32,12 @@ $nizRezervacija = $rezervacija->vratiSve($mysqli);
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
+    
     <title>Combo bags | Home</title>
 
     <link rel="icon" href="img/core-img/logo.png">
 
     <link rel="stylesheet" href="css/core-style.css">
- 
 
 </head>
 
@@ -61,71 +60,88 @@ $nizRezervacija = $rezervacija->vratiSve($mysqli);
             </div>
         </div>
     </div>
-
+    
     <div class="main-content-wrapper d-flex clearfix">
 
-      
         <div class="mobile-nav">
-        
             <div class="amado-navbar-brand">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
-         
             <div class="amado-navbar-toggler">
                 <span></span><span></span><span></span>
             </div>
         </div>
 
- 
         <header class="header-area clearfix">
-
             <div class="nav-close">
                 <i class="fa fa-close" aria-hidden="true"></i>
             </div>
-
             <div class="logo">
                 <a href="index.php"><img src="img/core-img/logo.png" alt=""></a>
             </div>
-   
+            <!-- Amado Nav -->
             <nav class="amado-nav">
                 <ul>
                     <li><a href="logout.php">Logout</a></li>
-                    <li><a href="brisanjePorudzbina.php">Preview and delete orders</a></li>
-                    <li><a href="izvestaj.php">Report</a></li>
+                    <li><a href="porudzbine.php">Edit orders</a></li>
+
                 </ul>
             </nav>
-         
+           
             <div class="social-info d-flex justify-content-between">
-            <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                <a href="https://www.instagram.com/combo.bags/?igshid=12a5mp93cknnb"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                 <a href="https://www.facebook.com/combo.bags1"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                
             </div>
         </header>
+        <h4 id="msgPut" class="text-center"></h4>
 
+       
         <div class="products-catagories-area clearfix">
             <div class="amado-pro-catagory clearfix">
-            <h3 id="msg" class="text-center"><?php if (isset($_GET['msg'])) { echo $_GET['msg']; } ?></h3>                            
+            <div class="container">
             <div class="main">
-             <p class="sign" align="center">Izmeni porudzbinu</p>           
-              <form class="form1" method="PUT" action="rest/rezervacije">
-            <select class="un " type="text" align="center" name="idPorudzbine" class="form-control">
-                <?php
-                    foreach ($nizRezervacija as $rezervacije) {
-                        ?>
-                    <option value="<?= $rezervacije->id ?>"><?= $rezervacije->rezervacija  ?></option>
+                    <p class="sign" align="center">Brisanje rezervacija</p>           
+            <br>
+             <input id="myInput" type="text" placeholder="Search..">
+            <table id="tabelaRezervacija" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">Kupac</th>
+                        <th onclick="sortTable(1)">Naziv</th>
+                        <th onclick="sortTable(2)">Opis</th>
+                        <th onclick="sortTable(3)">Rezervacija</th>
+                        <th onclick="sortTable(4)">Datum porudzbine</th>
+                        <th onclick="sortTable(5)">Cena</th>
+                        <th onclick="sortTable(6)">Obrisi</th>
+                    </tr>
+                </thead>
+                <tbody>
 
                     <?php
+                    foreach ($nizRezervacija as $rez) {
+                        ?>
+                        <tr>
+                            <td><?= $rez->kupac->ime_prezime ?></td>
+                            <td><?= $rez->torba->naziv  ?></td>
+                            <td><?= $rez->torba->opis  ?></td>
+                            <td><?= $rez->rezervacija ?></td>
+                            <td><?= $rez->datum ?></td>
+                            <td><?= $rez->cena ?></td>
+                            <td><a href="obrisiPorudzbinu.php?id=<?= $rez->id ?>" class="btn btn-danger">Obrisi</a></td>
+                        </tr>
+                        <?php
                     }
-                ?>
-            </select>
-            <input class="un " type="text" align="center" type="text" placeholder="Unesi cenu" class="form-control" name="cena">
-            <input style="background-color: #aa256f; border-color: #aa256f; color: white;" lass="submit" align="center" type="submit" class="form-control btn-primary" name="izmenaPorudzbine" value="Izmeni porudzbinu">
-            </form>
-            <h4 id="msgPut" class="text-center"></h4>
+                    ?>
+                </tbody>
+            </table>
         </div>
 
-            </div>
-        </div>
-      
+           </div>
+       </div>
+   </div>
+            
+     
     </div>
     <br>
     <br>
@@ -136,7 +152,7 @@ $nizRezervacija = $rezervacija->vratiSve($mysqli);
     <footer class="footer_area clearfix">
         <div class="container">
             <div class="row align-items-center">
-                <!-- Single Widget Area -->
+             
                 <div class="col-12 col-lg-4">
                     <div class="single_widget_area">
                         <!-- Logo -->
@@ -174,7 +190,72 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- Active js -->
     <script src="js/active.js"></script>
 
-     <script>
+    <script>
+
+      function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("tabelaRezervacija");
+  switching = true;
+  //Set the sorting direction to ascending:
+  dir = "asc"; 
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      //Each time a switch is done, increase this count by 1:
+      switchcount ++;      
+    } else {
+      /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
+            $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+              var value = $(this).val().toLowerCase();
+                $("#tabelaRezervacija tr").filter(function() {
+                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                   });
+                });
+              });
+
             $(document).ready( function () {
                 $('#tabelaRezervacija').DataTable( {
                     dom: 'Bfrtip',
@@ -190,32 +271,19 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             });
         </script>
         <script>
-             $(':input[name=izmenaPorudzbine]').click(function() {
-                // process the form
-                $("form").submit(function(event) {
-                    // get the form data
-                    var formData = {
-                        'idPorudzbine' : $(':input[name=idPorudzbine]').val(),
-                        'cena'         : $(':input[name=cena]').val()
-
-                    };
-                    setUrl = 'rest/rezervacije/' + formData.idPorudzbine;
-                    $.ajax({
-                        type        : 'PUT', // define the type of HTTP verb we want to use (POST for our form)
-                        url         : setUrl, // the url where we want to POST
-                        data        : JSON.stringify(formData), // our data object
-                        dataType    : 'json', // what type of data do we expect back from the server
-                        encode      : true,
-                        contentType: "application/json; charset=UTF-8"
-                    }).done(function(data) {
-                        $('#msgPut').html(data.poruka);  
-                    });
-                    
-                    // stop the form from submitting the normal way and refreshing the page
-                    event.preventDefault();
+            $(document).ready( function () {
+                $('#tabelaRezervacija').DataTable( {
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            extend: 'pdfHtml5',
+                            exportOptions: {
+                                columns: [ 0, 1, 2, 3, 4, 5 ]
+                            }
+                        }
+                    ]
                 });
             });
-
         </script>
 
         <style type="text/css">HTML CSSResult Skip Results Iframe
@@ -227,7 +295,6 @@ EDIT ON
     
     .main {
         background-color: #FFFFFF;
-        width: 400px;
         height: 400px;
         margin: 7em auto;
         border-radius: 1.5em;
